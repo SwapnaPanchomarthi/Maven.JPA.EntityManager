@@ -1,16 +1,36 @@
-package entities;
+package entitymanagerjpa.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "cd_table", schema = "Music", catalog = "")
+@Table(name = "cd_table", schema = "Music")
 public class CdTableEntity {
+    @Id
+  //  @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Basic
+    @Column
     private String artist;
+    @Basic
+    @Column
     private String description;
+    @Basic
+    @Column
     private Double price;
+    @Basic
+    @Column
     private String title;
+    @Basic
+    @Column
     private Integer year;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = ArtistTableEntity.class)
+    @JoinTable(name = "artist_cd",
+            joinColumns = @JoinColumn(name = "cd_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id"))
+    public Set<ArtistTableEntity> artistSet;
 
     @Override
     public String toString() {
@@ -24,8 +44,7 @@ public class CdTableEntity {
                 '}';
     }
 
-    @Id
-    @Column(name = "id")
+
     public int getId() {
         return id;
     }
@@ -34,8 +53,7 @@ public class CdTableEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "artist")
+
     public String getArtist() {
         return artist;
     }
@@ -44,8 +62,7 @@ public class CdTableEntity {
         this.artist = artist;
     }
 
-    @Basic
-    @Column(name = "description")
+
     public String getDescription() {
         return description;
     }
@@ -54,8 +71,7 @@ public class CdTableEntity {
         this.description = description;
     }
 
-    @Basic
-    @Column(name = "price")
+
     public Double getPrice() {
         return price;
     }
@@ -64,8 +80,7 @@ public class CdTableEntity {
         this.price = price;
     }
 
-    @Basic
-    @Column(name = "title")
+
     public String getTitle() {
         return title;
     }
@@ -74,8 +89,7 @@ public class CdTableEntity {
         this.title = title;
     }
 
-    @Basic
-    @Column(name = "year")
+
     public Integer getYear() {
         return year;
     }
@@ -110,5 +124,12 @@ public class CdTableEntity {
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (year != null ? year.hashCode() : 0);
         return result;
+    }
+
+    public void addArtist(ArtistTableEntity artist) {
+        if (artistSet == null) {
+            artistSet = new HashSet<ArtistTableEntity>();
+        }
+        artistSet.add(artist);
     }
 }

@@ -1,17 +1,41 @@
-package entities;
+package entitymanagerjpa.entities;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "artist_table", schema = "Music", catalog = "")
+@Table(name = "artist_table", schema = "Music")
 public class ArtistTableEntity {
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String instrument;
 
     @Id
-    @Column(name = "id")
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Basic
+    @Column
+    private String firstName;
+    @Basic
+    @Column
+    private String lastName;
+    @Basic
+    @Column
+    private String instrument;
+
+    @ManyToMany(mappedBy = "artistSet", cascade = CascadeType.ALL)
+    public Set<CdTableEntity> cds= new HashSet<CdTableEntity>();
+
+    @Override
+    public String toString() {
+        return "ArtistTableEntity{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", instrument='" + instrument + '\'' +
+                '}';
+    }
+
+
     public int getId() {
         return id;
     }
@@ -20,8 +44,7 @@ public class ArtistTableEntity {
         this.id = id;
     }
 
-    @Basic
-    @Column(name = "first_name")
+
     public String getFirstName() {
         return firstName;
     }
@@ -30,8 +53,6 @@ public class ArtistTableEntity {
         this.firstName = firstName;
     }
 
-    @Basic
-    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -40,8 +61,7 @@ public class ArtistTableEntity {
         this.lastName = lastName;
     }
 
-    @Basic
-    @Column(name = "instrument")
+
     public String getInstrument() {
         return instrument;
     }
@@ -72,5 +92,9 @@ public class ArtistTableEntity {
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (instrument != null ? instrument.hashCode() : 0);
         return result;
+    }
+
+    public void addCD(CdTableEntity cd) {
+        cds.add(cd);
     }
 }
